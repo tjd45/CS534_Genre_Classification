@@ -24,5 +24,5 @@ if __name__ == "__main__":
         for artist, genres in mappings.items():
             file.write(f'{artist}: {genres}\n')
 
-    
+    print(len(mappings))
     

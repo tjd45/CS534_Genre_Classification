@@ -6,8 +6,7 @@ from nb import nb
 
 if __name__ == "__main__":                                                       
     sample = top_tracks()
-    X_train, X_test, y_train, y_test = gen_Train_and_Test(sample,'track_duration', 0)
-    print(X_train)
+    X_train, X_test, y_train, y_test = gen_Train_and_Test(sample,'track_listens', 0)
 
     print("\n\nTesting for Single Feature - duration")
     print("\n\nNB:\n")
