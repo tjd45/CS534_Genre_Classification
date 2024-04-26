@@ -7,17 +7,23 @@ import math
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
-def gen_Train_and_Test(data,feature, subset,processed_X=None):
+def gen_Train_and_Test(data,feature, subset,processed_X=None,feature_combination=[]):
     if(subset != 0):
         dataset = data.sample(n=subset,random_state=42)
     else:
         dataset = data
     
-    if processed_X is not None:
+    if len(feature_combination)>0:
+        X = dataset[feature_combination]
+        if processed_X is not None:
+            print()
+            # deal with combining the artist name with the other info
+
+    elif processed_X is not None:
         X = processed_X
     else:
         X = dataset[[feature]]
-        
+
     y = dataset['genre_label']
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
