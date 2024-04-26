@@ -19,7 +19,7 @@ def gen_Train_and_Test(data,feature, subset):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
     print("Training sample length: "+str(len(X_train)))
-    print("Testing sample length: "+str(len(X_test))
+    print("Testing sample length: "+str(len(X_test)))
 
     return X_train,X_test,y_train,y_test
 
