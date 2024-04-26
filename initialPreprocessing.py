@@ -7,14 +7,19 @@ import math
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
-def gen_Train_and_Test(dataset,feature):
+def gen_Train_and_Test(data,feature, subset):
+    if(subset != 0):
+        dataset = data.sample(n=subset,random_state=42)
+    else:
+        dataset = data
+    
     X = dataset[[feature]]
     y = dataset['genre_label']
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
     print("Training sample length: "+str(len(X_train)))
-    print("Testing sample length: "+str(len(X_test)))
+    print("Testing sample length: "+str(len(X_test))
 
     return X_train,X_test,y_train,y_test
 
