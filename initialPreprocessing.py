@@ -7,19 +7,23 @@ import math
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
-def gen_Train_and_Test(data,feature, subset):
+def gen_Train_and_Test(data,feature, subset,processed_X=None):
     if(subset != 0):
         dataset = data.sample(n=subset,random_state=42)
     else:
         dataset = data
     
-    X = dataset[[feature]]
+    if processed_X is not None:
+        X = processed_X
+    else:
+        X = dataset[[feature]]
+        
     y = dataset['genre_label']
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
     print("Training sample length: "+str(len(X_train)))
-    print("Testing sample length: "+str(len(X_test))
+    print("Testing sample length: "+str(len(X_test)))
 
     return X_train,X_test,y_train,y_test
 
@@ -37,6 +41,7 @@ def top_tracks():
     tracks.columns = new_track_headers
     genre_info = pd.read_csv('fma_metadata/genres.csv')
     topg_tracks = tracks.dropna(subset=['track_genre_top']).copy()
+    topg_tracks = topg_tracks.dropna(subset=['track_title']).copy()
     label_encoder = LabelEncoder()
     topg_tracks['genre_label'] = label_encoder.fit_transform(topg_tracks['track_genre_top'])
 

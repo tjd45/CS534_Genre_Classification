@@ -1,9 +1,12 @@
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score, classification_report
 
-def knn(X_train, X_test, y_train, y_test):
+def knn(X_train, X_test, y_train, y_test, desc="", N=5):
+
+    print("\n\n\nKNN"+"("+str(N)+")"+desc+":\n")
+
     # Create a K Nearest Neighbors Classifier
-    knn_classifier = KNeighborsClassifier(n_neighbors=10)
+    knn_classifier = KNeighborsClassifier(n_neighbors=N)
     knn_classifier.fit(X_train, y_train) # train data
     y_pred = knn_classifier.predict(X_test) # predict data
 
