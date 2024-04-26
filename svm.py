@@ -23,3 +23,5 @@ def svm(X_train, X_test, y_train, y_test):
     print(f"Accuracy: {accuracy:.2f}")
     print("Classification Report:")
     print(report)
+
+    return y_pred
