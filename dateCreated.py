@@ -44,7 +44,7 @@ if __name__ == "__main__":
     X_train, X_test, y_train, y_test = gen_Train_and_Test(sample, 'track_date_created', 0)
 
     print("\n\nTesting for Single Feature - track_date_created")
-    print("\n\nNB:\n")
+
     nb(X_train, X_test, y_train, y_test)
-    print("\n\nKNN:\n")
+
     knn(X_train, X_test, y_train, y_test)

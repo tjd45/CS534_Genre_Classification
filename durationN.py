@@ -17,7 +17,5 @@ if __name__ == "__main__":
     X_test_scaled = scaler.transform(X_test)
 
     print("\n\nTesting for Single Feature - duration")
-    print("\n\nNB:\n")
     nb(X_train_scaled, X_test_scaled, y_train, y_test)
-    print("\n\n\nKNN:\n")
     knn(X_train_scaled, X_test_scaled, y_train, y_test)
