@@ -3,7 +3,10 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import accuracy_score, classification_report
 import warnings
 
-def svm(X_train, X_test, y_train, y_test):
+def svm(X_train, X_test, y_train, y_test, desc=""):
+    print("\n\n\nSVM"+desc+":\n")
+    print(str(X_train.shape[1]) + " features")
+    
     warnings.filterwarnings("ignore", category=UserWarning)
     # warnings.filterwarnings("ignore", category=UndefinedMetricWarning)
     # Create an SVM Classifier

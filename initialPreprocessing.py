@@ -14,15 +14,26 @@ def gen_Train_and_Test(data,feature, subset,processed_X=None,feature_combination
         dataset = data
     
     if len(feature_combination)>0:
-        X = dataset[feature_combination]
         if processed_X is not None:
-            print()
-            # deal with combining the artist name with the other info
+            X1 = dataset[feature_combination]
+            X1.reset_index(drop=True,inplace=True)
+            X2 = pd.DataFrame(processed_X)
+            X2.reset_index(drop=True,inplace=True)
+            
 
+            X = pd.concat([X1, X2], axis=1)
+            # bc the vectorised representation of the track names give the column titles as integers had to change this
+            X.columns = X.columns.astype(str)
+        
+        else:
+            X = dataset[feature_combination]
+  
     elif processed_X is not None:
         X = processed_X
+    
     else:
         X = dataset[[feature]]
+    
 
     y = dataset['genre_label']
 
@@ -33,7 +44,7 @@ def gen_Train_and_Test(data,feature, subset,processed_X=None,feature_combination
 
     return X_train,X_test,y_train,y_test
 
-def top_tracks():
+def top_tracks(daterecorded=False):
     track_headers = pd.read_csv('fma_metadata/tracks.csv',nrows=3, header=None)
     new_track_headers = []
 
@@ -48,11 +59,59 @@ def top_tracks():
     genre_info = pd.read_csv('fma_metadata/genres.csv')
     topg_tracks = tracks.dropna(subset=['track_genre_top']).copy()
     topg_tracks = topg_tracks.dropna(subset=['track_title']).copy()
+
+    if daterecorded:
+        # Ensure the 'track_date_recorded' column is a datetime object
+        topg_tracks['track_date_recorded'] = pd.to_datetime(topg_tracks['track_date_recorded'])
+
+        # Calculate the number of days since the first date in the dataset
+        min_date =  topg_tracks['track_date_recorded'].min()
+        topg_tracks['days_since_first'] = (topg_tracks['track_date_recorded'] - min_date).dt.days
+        topg_tracks = topg_tracks.dropna(subset=['track_date_recorded']).copy()
+
+
     label_encoder = LabelEncoder()
     topg_tracks['genre_label'] = label_encoder.fit_transform(topg_tracks['track_genre_top'])
 
     return topg_tracks
 
+def top_echonest_tracks(daterecorded=False):
+    topg_tracks = top_tracks()
+
+    echonest_headers = pd.read_csv('fma_metadata/echonest.csv',nrows=4, header=None)
+    new_echonest_headers = []
+
+    for col in echonest_headers:
+        if not isinstance(echonest_headers[col].iloc[0],str) :
+            new_echonest_headers.append(echonest_headers[col].iloc[3])
+        else:
+            new_echonest_headers.append(echonest_headers[col].iloc[0]+"_"+echonest_headers[col].iloc[2])
+
+    # print(echonest_headers)
+    # print(new_echonest_headers)
+
+    echonest = pd.read_csv('fma_metadata/echonest.csv',skiprows=[0,1,2,3],header=None)
+    echonest.columns = new_echonest_headers
+
+
+    topg_echo_merged = pd.merge(topg_tracks,echonest,on='track_id',how='inner')
+
+
+
+    if daterecorded:
+        # Ensure the 'track_date_recorded' column is a datetime object
+        topg_echo_merged['track_date_recorded'] = pd.to_datetime(topg_echo_merged['track_date_recorded'])
+
+        # Calculate the number of days since the first date in the dataset
+        min_date =  topg_echo_merged['track_date_recorded'].min()
+        topg_echo_merged['days_since_first'] = (topg_echo_merged['track_date_recorded'] - min_date).dt.days
+        topg_echo_merged = topg_echo_merged.dropna(subset=['track_date_recorded']).copy()
+
+    return topg_echo_merged
+
+
 def genres():
     genre_info = pd.read_csv('fma_metadata/genres.csv')
     return genre_info
+
+# top_echonest_tracks()
