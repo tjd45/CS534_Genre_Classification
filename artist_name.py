@@ -89,6 +89,3 @@ if __name__ == "__main__":
     descText=" BOW_lower_nostop_nopunc"
 
     run_mega(sample,sample_1_tfidf,descText)
-
-    
-    
