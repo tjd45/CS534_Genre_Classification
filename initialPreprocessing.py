@@ -96,7 +96,7 @@ def top_echonest_tracks(daterecorded=False):
 
     topg_echo_merged = pd.merge(topg_tracks,echonest,on='track_id',how='inner')
 
-
+    get_genre_info(topg_echo_merged)
 
     if daterecorded:
         # Ensure the 'track_date_recorded' column is a datetime object
@@ -108,6 +108,47 @@ def top_echonest_tracks(daterecorded=False):
         topg_echo_merged = topg_echo_merged.dropna(subset=['track_date_recorded']).copy()
 
     return topg_echo_merged
+
+def top_n_genre_tracks(n):
+    track_headers = pd.read_csv('fma_metadata/tracks.csv',nrows=3, header=None)
+    new_track_headers = []
+
+    for col in track_headers:
+        if not isinstance(track_headers[col].iloc[0],str) :
+            new_track_headers.append(track_headers[col].iloc[2])
+        else:
+            new_track_headers.append(track_headers[col].iloc[0]+"_"+track_headers[col].iloc[1])
+
+    tracks = pd.read_csv('fma_metadata/tracks.csv',skiprows=[0,1,2], header=None)
+    tracks.columns = new_track_headers
+
+    topg_tracks = tracks.dropna(subset=['track_genre_top']).copy()
+    topg_tracks = topg_tracks.dropna(subset=['track_title']).copy()
+
+    top_genres=get_genre_info(topg_tracks,False)
+
+    top_n_genres = [genre for genre, _ in top_genres.items()][:n]
+
+    topg_tracks = topg_tracks[topg_tracks['track_genre_top'].isin(top_n_genres)].copy()
+
+    label_encoder = LabelEncoder()
+    topg_tracks['genre_label'] = label_encoder.fit_transform(topg_tracks['track_genre_top'])
+    
+    return topg_tracks
+
+def get_genre_info(tracks, output=True):
+    genre_counts = tracks['track_genre_top'].value_counts()
+
+    total_tracks = len(tracks)
+    runningCount = 0
+    if(output):
+        for genre, count in genre_counts.items():
+            runningCount += count
+            percentage = (count / total_tracks) * 100
+            runningPct = (runningCount / total_tracks) * 100
+            print(f"{genre}: {percentage:.2f}% ({count} tracks) - {runningPct:.2f}% total")
+    
+    return genre_counts
 
 
 def genres():
