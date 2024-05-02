@@ -68,6 +68,7 @@ def top_tracks(daterecorded=False):
         min_date =  topg_tracks['track_date_recorded'].min()
         topg_tracks['days_since_first'] = (topg_tracks['track_date_recorded'] - min_date).dt.days
         topg_tracks = topg_tracks.dropna(subset=['track_date_recorded']).copy()
+        print("with date"+str(len(topg_tracks)))
 
 
     label_encoder = LabelEncoder()
@@ -93,8 +94,11 @@ def top_echonest_tracks(daterecorded=False):
     echonest = pd.read_csv('fma_metadata/echonest.csv',skiprows=[0,1,2,3],header=None)
     echonest.columns = new_echonest_headers
 
+    print("echonest"+str(len(echonest)))
 
     topg_echo_merged = pd.merge(topg_tracks,echonest,on='track_id',how='inner')
+
+    print("merged"+str(len(topg_echo_merged)))
 
     get_genre_info(topg_echo_merged)
 
@@ -106,6 +110,7 @@ def top_echonest_tracks(daterecorded=False):
         min_date =  topg_echo_merged['track_date_recorded'].min()
         topg_echo_merged['days_since_first'] = (topg_echo_merged['track_date_recorded'] - min_date).dt.days
         topg_echo_merged = topg_echo_merged.dropna(subset=['track_date_recorded']).copy()
+        print("merged with date"+str(len(topg_echo_merged)))
 
     return topg_echo_merged
 

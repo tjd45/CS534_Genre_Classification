@@ -4,6 +4,7 @@ from sklearn.model_selection import train_test_split
 from svm import svm
 from knn import knn
 from nb import nb
+from sgd import sgd
 import nltk
 import nltk
 from nltk.corpus import stopwords
@@ -27,15 +28,17 @@ def vectorise(data, method):
 def run_mega(sample, processed ,descText):
     X_train, X_test, y_train, y_test = gen_Train_and_Test(genres, processed)
 
-    knn(X_train, X_test, y_train, y_test,descText,1)
-    knn(X_train, X_test, y_train, y_test,descText,3)
-    knn(X_train, X_test, y_train, y_test,descText,5)
-    knn(X_train, X_test, y_train, y_test,descText,7)
-    knn(X_train, X_test, y_train, y_test,descText,9)
-    knn(X_train, X_test, y_train, y_test,descText,21)
-    knn(X_train, X_test, y_train, y_test,descText,99)
-    knn(X_train, X_test, y_train, y_test,descText,199)
-    nb(X_train.toarray(), X_test.toarray(), y_train, y_test,descText)
+    # knn(X_train, X_test, y_train, y_test,descText,1)
+    # knn(X_train, X_test, y_train, y_test,descText,3)
+    # knn(X_train, X_test, y_train, y_test,descText,5)
+    # knn(X_train, X_test, y_train, y_test,descText,7)
+    # knn(X_train, X_test, y_train, y_test,descText,9)
+    # knn(X_train, X_test, y_train, y_test,descText,21)
+    # knn(X_train, X_test, y_train, y_test,descText,99)
+    # knn(X_train, X_test, y_train, y_test,descText,199)
+    # nb(X_train.toarray(), X_test.toarray(), y_train, y_test,descText)
+    sgd(X_train, X_test, y_train, y_test,descText)
+
 
 def process_artist_names(names, lowercase=False,use_stop_words=False, remove_punctuation=False):
     stemmer = PorterStemmer()
@@ -78,9 +81,9 @@ if __name__ == "__main__":
             # Add the artist as a key
             names.append(artist)
             genres.append(genre)
-
+    print(len(names))
     names = process_artist_names(names, True, True, False)
     processed_X = vectorise(names, "tfidf")
 
-    descText = "BOW_lower_nostop_nopunc"
+    descText = "TFIDF_lower_nostop_nopunc"
     run_mega(genres, processed_X, descText)

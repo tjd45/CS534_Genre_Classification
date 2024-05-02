@@ -3,6 +3,7 @@ import pandas as pd
 from svm import svm
 from knn import knn
 from nb import nb
+from sgd import sgd
 
 # will need to install nltk
 import nltk
@@ -58,15 +59,17 @@ def vectorise(titles, method):
 def run_mega(sample, processed ,descText):
     X_train, X_test, y_train, y_test = gen_Train_and_Test(sample,'',0, processed)
 
-    knn(X_train, X_test, y_train, y_test,descText,1)
-    # knn(X_train, X_test, y_train, y_test,descText,3)
-    # knn(X_train, X_test, y_train, y_test,descText,5)
-    # knn(X_train, X_test, y_train, y_test,descText,7)
-    knn(X_train, X_test, y_train, y_test,descText,9)
-    knn(X_train, X_test, y_train, y_test,descText,21)
-    # knn(X_train, X_test, y_train, y_test,descText,99)
-    # knn(X_train, X_test, y_train, y_test,descText,199)
-    nb(X_train, X_test, y_train, y_test,descText)
+    # knn(X_train, X_test, y_train, y_test,descText,1)
+    # # knn(X_train, X_test, y_train, y_test,descText,3)
+    # # knn(X_train, X_test, y_train, y_test,descText,5)
+    # # knn(X_train, X_test, y_train, y_test,descText,7)
+    # knn(X_train, X_test, y_train, y_test,descText,9)
+    # knn(X_train, X_test, y_train, y_test,descText,21)
+    # # knn(X_train, X_test, y_train, y_test,descText,99)
+    # # knn(X_train, X_test, y_train, y_test,descText,199)
+    # nb(X_train, X_test, y_train, y_test,descText)
+    sgd(X_train, X_test, y_train, y_test,descText)
+
 
 if __name__ == "__main__":                                                       
     sample = top_tracks()
@@ -85,7 +88,7 @@ if __name__ == "__main__":
     # sample_1_tfidf = vectorise(sample_1,"tfidf")
     # descText=" TF-IDF_lower_nostop_nopunc"
 
-    sample_1_tfidf = vectorise(sample_1,"bow")
-    descText=" BOW_lower_nostop_nopunc"
+    sample_1_tfidf = vectorise(sample_1,"tfidf")
+    descText=" tfidf_lower_nostop_nopunc"
 
     run_mega(sample,sample_1_tfidf,descText)
