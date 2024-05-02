@@ -155,6 +155,58 @@ def get_genre_info(tracks, output=True):
     
     return genre_counts
 
+def top_tracks_final(genre_lim = True):
+    track_headers = pd.read_csv('fma_metadata/tracks.csv',nrows=3, header=None)
+    new_track_headers = []
+
+    for col in track_headers:
+        if not isinstance(track_headers[col].iloc[0],str) :
+            new_track_headers.append(track_headers[col].iloc[2])
+        else:
+            new_track_headers.append(track_headers[col].iloc[0]+"_"+track_headers[col].iloc[1])
+
+    tracks = pd.read_csv('fma_metadata/tracks.csv',skiprows=[0,1,2], header=None)
+    tracks.columns = new_track_headers
+    genre_info = pd.read_csv('fma_metadata/genres.csv')
+    topg_tracks = tracks.dropna(subset=['track_genre_top']).copy()
+    topg_tracks = topg_tracks.dropna(subset=['track_title']).copy()
+
+    if(genre_lim==True):
+        # limit the genres represented to these 5 genres
+        top_genres = ["Rock", "Electronic", "Hip-Hop", "Folk", "Pop"]
+        topg_tracks = tracks[tracks['track_genre_top'].isin(top_genres)].copy()
+
+    label_encoder = LabelEncoder()
+    topg_tracks['genre_label'] = label_encoder.fit_transform(topg_tracks['track_genre_top'])
+
+    # Ensure the 'track_date_recorded' column is a datetime object
+    topg_tracks['track_date_recorded'] = pd.to_datetime(topg_tracks['track_date_recorded'])
+
+    # Calculate the number of days since the first date in the dataset
+    min_date =  topg_tracks['track_date_recorded'].min()
+    topg_tracks['days_since_first'] = (topg_tracks['track_date_recorded'] - min_date).dt.days
+    topg_tracks_w_date = topg_tracks.dropna(subset=['track_date_recorded']).copy()
+
+    echonest_headers = pd.read_csv('fma_metadata/echonest.csv',nrows=4, header=None)
+    new_echonest_headers = []
+
+    for col in echonest_headers:
+        if not isinstance(echonest_headers[col].iloc[0],str) :
+            new_echonest_headers.append(echonest_headers[col].iloc[3])
+        else:
+            new_echonest_headers.append(echonest_headers[col].iloc[0]+"_"+echonest_headers[col].iloc[2])
+
+    echonest = pd.read_csv('fma_metadata/echonest.csv',skiprows=[0,1,2,3],header=None)
+    echonest.columns = new_echonest_headers
+
+    topg_echo_merged = pd.merge(topg_tracks,echonest,on='track_id',how='inner')
+    topg_echo_merged_w_date = pd.merge(topg_tracks_w_date,echonest,on='track_id',how='inner')
+
+
+
+    print(f"Data processing complete return array details:\n {len(topg_tracks)} records for the selected genres\n {len(topg_tracks_w_date)} of these have a date recorded\n {len(topg_echo_merged)} have echonest features but no date, {len(topg_echo_merged_w_date)} have echonest features and a date")
+
+    return topg_tracks, topg_tracks_w_date, topg_echo_merged, topg_echo_merged_w_date
 
 def genres():
     genre_info = pd.read_csv('fma_metadata/genres.csv')
