@@ -19,4 +19,4 @@ def nb(X_train, X_test, y_train, y_test, desc=""):
     print("Classification Report:")
     print(report)
 
-    return y_pred
+    return accuracy, y_pred

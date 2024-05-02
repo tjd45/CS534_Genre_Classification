@@ -204,7 +204,7 @@ def top_tracks_final(genre_lim = True):
 
 
 
-    print(f"Data processing complete return array details:\n {len(topg_tracks)} records for the selected genres\n {len(topg_tracks_w_date)} of these have a date recorded\n {len(topg_echo_merged)} have echonest features but no date, {len(topg_echo_merged_w_date)} have echonest features and a date")
+    print(f"Data processing complete return array details:\n {len(topg_tracks)} records for the selected genres\n {len(topg_tracks_w_date)} of these have a date recorded\n {len(topg_echo_merged)} have echonest features but no date\n {len(topg_echo_merged_w_date)} have echonest features and a date")
 
     return topg_tracks, topg_tracks_w_date, topg_echo_merged, topg_echo_merged_w_date
 
