@@ -23,7 +23,6 @@ def top_tracks(daterecorded=False):
     topg_tracks = topg_tracks.dropna(subset=['track_title']).copy()
 
     if daterecorded:
-        # Ensure the 'track_date_recorded' column is a datetime object
         topg_tracks['track_date_recorded'] = pd.to_datetime(topg_tracks['track_date_recorded'])
 
         # Calculate the number of days since the first date in the dataset
@@ -37,38 +36,37 @@ def top_tracks(daterecorded=False):
     return topg_tracks
 
 def plot_date_recorded_distribution(data, feature='track_date_recorded', genre_column='genre_label'):
-    # Convert 'track_date_recorded' column to datetime
     data[feature] = pd.to_datetime(data[feature])
 
-    # Group data by year and genre, and count occurrences
-    grouped_data = data.groupby([data[feature].dt.year, genre_column])[genre_column].count().unstack(fill_value=0)
+    # Filter data to include only specified genres
+    selected_genres = ["Rock", "Electronic", "Hip-Hop", "Folk", "Pop"]
+    filtered_data = data[data[genre_column].isin(selected_genres)]
+
+    # Group filtered data by year and genre, and count occurrences
+    grouped_data = filtered_data.groupby([filtered_data[feature].dt.year, genre_column])[genre_column].count().unstack(fill_value=0)
 
     # Create a color map for genres
-    genre_colors = {
-        genre: f"C{i}" for i, genre in enumerate(data[genre_column].unique())
-    }
+    unique_genres = filtered_data[genre_column].unique()
+    genre_colors = {genre: plt.cm.tab10(i) for i, genre in enumerate(unique_genres)}
 
     # Plot stacked bars for each year
     plt.figure(figsize=(14, 6))
     ax = plt.subplot()
 
-    for genre in grouped_data.columns:
-        ax.bar(grouped_data.index, grouped_data[genre], color=genre_colors[genre], label=genre, alpha=0.7)
+    # Calculate cumulative sum of frequencies for each genre within each year
+    stacked_data = grouped_data.cumsum(axis=1)
 
-    ax.set_title(f'Distribution of {feature} colored by genre (Stacked)')
+    for genre in grouped_data.columns:
+        ax.bar(grouped_data.index, grouped_data[genre], bottom=stacked_data[genre] - grouped_data[genre],
+               color=genre_colors[genre], label=genre, alpha=0.7)
+
+    ax.set_title(f'Distribution of {feature} for selected genres (Stacked)')
     ax.set_xlabel('Year')
     ax.set_ylabel('Frequency')
     ax.legend(title=genre_column)
     plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
     plt.tight_layout()
     plt.show()
-
-if __name__ == "__main__":
-    sample = top_tracks(True)
-
-    # Call the function to plot the distribution
-    plot_date_recorded_distribution(sample)
-
 
 if __name__ == "__main__":
     sample = top_tracks(True)
