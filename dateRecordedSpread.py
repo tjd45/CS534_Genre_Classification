@@ -40,18 +40,35 @@ def plot_date_recorded_distribution(data, feature='track_date_recorded', genre_c
     # Convert 'track_date_recorded' column to datetime
     data[feature] = pd.to_datetime(data[feature])
 
-    # Group data by genre
-    grouped_data = data.groupby(genre_column)
+    # Group data by year and genre, and count occurrences
+    grouped_data = data.groupby([data[feature].dt.year, genre_column])[genre_column].count().unstack(fill_value=0)
 
-    # Plot the distribution of 'date_recorded' for each genre
-    for genre, group in grouped_data:
-        plt.figure(figsize=(10, 6))
-        plt.hist(group[feature], bins=30, alpha=0.7, label=genre)
-        plt.title(f'Distribution of {feature} for {genre} genre')
-        plt.xlabel(feature)
-        plt.ylabel('Frequency')
-        plt.legend()
-        plt.show()
+    # Create a color map for genres
+    genre_colors = {
+        genre: f"C{i}" for i, genre in enumerate(data[genre_column].unique())
+    }
+
+    # Plot stacked bars for each year
+    plt.figure(figsize=(14, 6))
+    ax = plt.subplot()
+
+    for genre in grouped_data.columns:
+        ax.bar(grouped_data.index, grouped_data[genre], color=genre_colors[genre], label=genre, alpha=0.7)
+
+    ax.set_title(f'Distribution of {feature} colored by genre (Stacked)')
+    ax.set_xlabel('Year')
+    ax.set_ylabel('Frequency')
+    ax.legend(title=genre_column)
+    plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
+    plt.tight_layout()
+    plt.show()
+
+if __name__ == "__main__":
+    sample = top_tracks(True)
+
+    # Call the function to plot the distribution
+    plot_date_recorded_distribution(sample)
+
 
 if __name__ == "__main__":
     sample = top_tracks(True)
