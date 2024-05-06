@@ -4,7 +4,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import math
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, MinMaxScaler
+
 
 def gen_Train_and_Test(data,feature, subset,processed_X=None,feature_combination=[]):
     if(subset != 0):
@@ -25,6 +26,8 @@ def gen_Train_and_Test(data,feature, subset,processed_X=None,feature_combination
             X.columns = X.columns.astype(str)
         
         else:
+            print("Trying to select feature combination:")
+            print(feature_combination)
             X = dataset[feature_combination]
   
     elif processed_X is not None:
@@ -173,7 +176,7 @@ def top_tracks_final(genre_lim = True):
     if(genre_lim==True):
         # limit the genres represented to these 5 genres
         top_genres = ["Rock", "Electronic", "Hip-Hop", "Folk", "Pop"]
-        topg_tracks = tracks[tracks['track_genre_top'].isin(top_genres)].copy()
+        topg_tracks = topg_tracks[topg_tracks['track_genre_top'].isin(top_genres)].copy()
 
     label_encoder = LabelEncoder()
     topg_tracks['genre_label'] = label_encoder.fit_transform(topg_tracks['track_genre_top'])
@@ -201,6 +204,16 @@ def top_tracks_final(genre_lim = True):
     topg_echo_merged = pd.merge(topg_tracks,echonest,on='track_id',how='inner')
     topg_echo_merged_w_date = pd.merge(topg_tracks_w_date,echonest,on='track_id',how='inner')
 
+    # Normalising numerical columns at source
+    numerical_columns = ['track_duration', 'track_listens','track_favorites']
+    numerical_columns_w_date = ['track_duration', 'track_listens','track_favorites','days_since_first']
+    numerical_columns_w_echo = ['track_duration', 'track_listens','track_favorites','echonest_tempo']
+    numerical_columns_w_echo_date = ['track_duration', 'track_listens','track_favorites','days_since_first','echonest_tempo']
+    scaler = MinMaxScaler()
+    topg_tracks[numerical_columns] = scaler.fit_transform(topg_tracks[numerical_columns])
+    topg_tracks_w_date[numerical_columns_w_date] = scaler.fit_transform(topg_tracks_w_date[numerical_columns_w_date])
+    topg_echo_merged[numerical_columns_w_echo] = scaler.fit_transform(topg_echo_merged[numerical_columns_w_echo])
+    topg_echo_merged_w_date[numerical_columns_w_echo_date] = scaler.fit_transform(topg_echo_merged_w_date[numerical_columns_w_echo_date])
 
 
     print(f"Data processing complete return array details:\n {len(topg_tracks)} records for the selected genres\n {len(topg_tracks_w_date)} of these have a date recorded\n {len(topg_echo_merged)} have echonest features but no date\n {len(topg_echo_merged_w_date)} have echonest features and a date")
