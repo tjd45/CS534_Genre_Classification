@@ -98,7 +98,7 @@ if __name__ == "__main__":
     # descText=" BOW_lower_stop_nopunc"
     # run_mega(sample,sample_1_bow,descText)
 
-    # # SAMPLE 2
+    # # # SAMPLE 2
     # sample_2_tfidf = vectorise(sample_2,"tfidf")
     # descText=" TF-IDF_lower_stop_punc"
 
@@ -109,16 +109,16 @@ if __name__ == "__main__":
     # descText=" BOW_lower_stop_punc"
     # run_mega(sample,sample_2_bow,descText)
 
-    # # SAMPLE 3
+    # # # SAMPLE 3
     # sample_3_tfidf = vectorise(sample_3,"tfidf")
     # descText=" TF-IDF_lower_nostop_nopunc"
 
     # run_mega(sample,sample_3_tfidf,descText)
     
 
-    # sample_3_bow = vectorise(sample_3,"bow")
-    # descText=" BOW_lower_nostop_nopunc"
-    # run_mega(sample,sample_3_bow,descText)
+    sample_3_bow = vectorise(sample_3,"bow")
+    descText=" BOW_lower_nostop_nopunc"
+    run_mega(sample,sample_3_bow,descText)
 
     # SAMPLE 4
     sample_4_tfidf = vectorise(sample_4,"tfidf")

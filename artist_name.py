@@ -85,10 +85,12 @@ if __name__ == "__main__":
     # sample_4 = process_track_names(sample, True, False, False)
    
 
-    # sample_1_tfidf = vectorise(sample_1,"tfidf")
-    # descText=" TF-IDF_lower_nostop_nopunc"
-
     sample_1_tfidf = vectorise(sample_1,"tfidf")
-    descText=" tfidf_lower_nostop_nopunc"
+    descText=" TF-IDF_lower_nostop_nopunc"
+
+    run_mega(sample,sample_1_tfidf,descText)
+    
+    sample_1_tfidf = vectorise(sample_1,"bow")
+    descText=" bow_lower_nostop_nopunc"
 
     run_mega(sample,sample_1_tfidf,descText)
