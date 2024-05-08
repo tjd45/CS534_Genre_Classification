@@ -20,3 +20,14 @@ def nb(X_train, X_test, y_train, y_test, desc=""):
     print(report)
 
     return accuracy, y_pred
+
+def nb_(X_train, X_test, y_train, y_test, desc=""):
+    print("\n\n\nNB"+desc+":\n")
+    print(str(X_train.shape[1]) + " features")
+    # Create a Gaussian Naive Bayes classifier
+    naive_bayes_classifier = GaussianNB()
+    naive_bayes_classifier.fit(X_train, y_train) # train data
+    y_pred = naive_bayes_classifier.predict(X_test) # predict data
+    
+
+    return naive_bayes_classifier, y_pred

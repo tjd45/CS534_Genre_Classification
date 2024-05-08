@@ -14,10 +14,15 @@ def knn(X_train, X_test, y_train, y_test, desc="", N=-1):
     if N<0:
         sqrt_sample_size = int(np.sqrt(X_train.shape[0]))
 
-        # Generate odd k values from 1 to sqrt_sample_size
-        odd_k_values = list(range(1, sqrt_sample_size + 1, 2))
+        if X_train.shape[1] > 50:
+            print("CHECKING 10 K VALUES ONLY \n")
+            k_values = np.linspace(1, sqrt_sample_size, 10, dtype=int)  # Check only 10 k values
+        else:
+            print("CHECKING ALL ODD K VALUES")
+            k_values = list(range(1, sqrt_sample_size + 1, 2))  # Check all odd k values
 
-        param_grid = {'n_neighbors': odd_k_values}
+
+        param_grid = {'n_neighbors': k_values}
 
         knn_classifier = KNeighborsClassifier()
     
@@ -69,3 +74,16 @@ def knn(X_train, X_test, y_train, y_test, desc="", N=-1):
     print(report)
 
     return accuracy,y_pred, num_feats
+
+def knn_(X_train, X_test, y_train, y_test, K):
+
+        
+    print("\n\n\nKNN"+"("+str(K)+")")
+    print(str(X_train.shape[1]) + " features")
+
+    # Create a K Nearest Neighbors Classifier
+    knn_classifier = KNeighborsClassifier(n_neighbors=K)
+    knn_classifier.fit(X_train, y_train) # train data
+    y_pred = knn_classifier.predict(X_test) # predict data
+
+    return knn_classifier,y_pred

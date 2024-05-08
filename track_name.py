@@ -26,7 +26,6 @@ def process_track_names(df, lowercase=False,use_stop_words=False, remove_punctua
 
     for title in df['track_title']:
         thistitle = title
-
         if lowercase:
             thistitle = thistitle.lower()
         
